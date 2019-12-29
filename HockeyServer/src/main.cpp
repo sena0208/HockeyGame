@@ -20,7 +20,7 @@ int main(void){
 
   std::cout << "*** Game Start! ***" << std::endl;
 
-  for(int iter = 0; iter < MAXITER; iter++){
+  for(int iter = 0; iter < 5; iter++){
     //1. get all information
     //値を取り出す作業はまとめて一つの関数にしたい
     puck_pos = server.getPuckPos();
@@ -41,6 +41,7 @@ int main(void){
     CommandResult result[NUM_MALLET];
     for(int id = 0; id < NUM_MALLET; id++) result[id] = server.sendMalletVel(id, mallet_vel[id]);
 
+    server.SendToPlayer(iter);
     //4. update server
     server.updateAll();
     

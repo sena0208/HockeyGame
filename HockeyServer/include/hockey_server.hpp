@@ -15,11 +15,26 @@ class HockeyServer
     //Team*  s_team_2;
     FILE* fp;
 
+    //TCP SOCKET
+  private:
+    int server_sockfd;
+    int client_sockfd;
+
+    struct sockaddr_in server_address;
+    struct sockaddr_in client_address;
+
+    socklen_t server_len;
+    socklen_t client_len;
+
+    double send[4];
+    double recv[4];
+
   public:
     HockeyServer();
     ~HockeyServer();
 
   public:
+    void SendToPlayer(int iter);
     //puck getter
     Vector2D & getPuckPos() const;
     Vector2D & getPuckVel() const;
@@ -29,6 +44,7 @@ class HockeyServer
     Vector2D & getTeamVel(int id) const;
 
   private:
+    void TcpSocketSetting();
     void initialMalletSet();
     //assign command velocity
     void setMalletVel(int id, Vector2D const cm_vel);
