@@ -26,8 +26,8 @@ class HockeyServer
     socklen_t server_len;
     socklen_t client_len;
 
-    double send[4];
-    double recv[4];
+    double send[4 + (NUM_TEAM * NUM_MALLET * 4)];
+    double recv[NUM_MALLET * 4];
 
   public:
     HockeyServer();
@@ -45,6 +45,8 @@ class HockeyServer
 
   private:
     void TcpSocketSetting();
+    void zipData();
+    void unzipData();
     void initialMalletSet();
     //assign command velocity
     void setMalletVel(int id, Vector2D const cm_vel);

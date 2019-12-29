@@ -5,16 +5,16 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "include.hpp"
+
 int main(){
   int sockfd;
   socklen_t len;
   struct sockaddr_in address;
   int result;
-  int ch[2];
-  int ans[3];
-  int num[2];
 
-  double data[4];
+  double data[4 + (NUM_TEAM * NUM_MALLET * 4)];
+  double new_data[NUM_MALLET * 4];
 
   if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
     perror("socket");
@@ -37,14 +37,24 @@ int main(){
     read(sockfd, data, sizeof(data));   //GETTER
 
     /* procedure */
-    printf("receive:\n");
-    printf("(%d)  %f\n", i, data[0]);
+    //printf("receive:\n");
+    //printf("(%d)  %f\n", i, data[0]);
+    //printf("send:\n");
+    //printf("(%d)  %f\n", i, data[0]);
+
+    //mallet 1
+    new_data[0] = data[4];   //pos x
+    new_data[1] = data[5];   //pos y
+    new_data[2] = data[6];   //vel x
+    new_data[3] = data[7];   //vel y
+    //mallet 2
+    new_data[4] = data[8];
+    new_data[5] = data[9];
+    new_data[6] = data[10];
+    new_data[7] = data[11];
+
     sleep(1);
-
-
-    printf("send:\n");
-    printf("(%d)  %f\n", i, data[0]);
-    write(sockfd, data, sizeof(data));  //SETTER
+    write(sockfd, new_data, sizeof(new_data));  //SETTER
 
   }
   close(sockfd);;

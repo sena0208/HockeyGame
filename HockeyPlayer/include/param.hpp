@@ -21,8 +21,6 @@
 //TEAM
 #define NUM_TEAM     1
 //MALLET
-
-/* DONT CHANGE */
 #define NUM_MALLET   2
 #define MALLET_R     0.3
 

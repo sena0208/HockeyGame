@@ -171,15 +171,58 @@ void HockeyServer::updateAll()
   }
 }
 
+void HockeyServer::zipData()
+{
+  send[0]  = s_puck->m_pos.x;
+  send[1]  = s_puck->m_pos.y;
+  send[2]  = s_puck->m_vel.x;
+  send[3]  = s_puck->m_vel.y;
+  
+  //send[4]  = s_team_1->s_mallet[0].m_pos.x;
+  //send[5]  = s_team_1->s_mallet[0].m_pos.y;
+  //send[6]  = s_team_1->s_mallet[0].m_vel.x;
+  //send[7]  = s_team_1->s_mallet[0].m_vel.y;
+
+  //send[8]  = s_team_1->s_mallet[1].m_pos.x;
+  //send[9]  = s_team_1->s_mallet[1].m_pos.y;
+  //send[10] = s_team_1->s_mallet[1].m_vel.x;
+  //send[11] = s_team_1->s_mallet[1].m_vel.y;
+
+  for(int i = 0; i < NUM_MALLET; i++){
+    send[4 + (i * 4)]     = s_team_1->s_mallet[i].m_pos.x;
+    send[4 + (i * 4) + 1] = s_team_1->s_mallet[i].m_pos.y;
+    send[4 + (i * 4) + 2] = s_team_1->s_mallet[i].m_vel.x;
+    send[4 + (i * 4) + 3] = s_team_1->s_mallet[i].m_vel.y;
+  }
+}
+
+void HockeyServer::unzipData()
+{
+  //s_team_1->s_mallet[0].m_pos.x = recv[0];
+  //s_team_1->s_mallet[0].m_pos.y = recv[1];
+  //s_team_1->s_mallet[0].m_vel.x = recv[2];
+  //s_team_1->s_mallet[0].m_vel.y = recv[3];
+
+  //s_team_1->s_mallet[1].m_pos.x = recv[4];
+  //s_team_1->s_mallet[1].m_pos.y = recv[5];
+  //s_team_1->s_mallet[1].m_vel.x = recv[6];
+  //s_team_1->s_mallet[1].m_vel.y = recv[7];
+
+  for(int i = 0; i < NUM_MALLET; i++){
+    s_team_1->s_mallet[i].m_pos.x = recv[(i * 4)];
+    s_team_1->s_mallet[i].m_pos.y = recv[(i * 4) + 1];
+    s_team_1->s_mallet[i].m_vel.x = recv[(i * 4) + 2];
+    s_team_1->s_mallet[i].m_vel.y = recv[(i * 4) + 3];
+  }
+
+}
+
 void HockeyServer::SendToPlayer(int iter)
 {
-  for(int i = 0; i < 4; i++){
-    send[i] = iter;
-  }
-  printf("send   :%f\n", send[0]);
+  zipData();
   write(client_sockfd, send, sizeof(send));
   read(client_sockfd, recv, sizeof(recv));
-  printf("receive:%f\n", recv[0]);
+  unzipData();
 
 }
 
