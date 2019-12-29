@@ -1,9 +1,10 @@
 #ifndef __STEAM__
 #define __STEAM__
 
-#include <iostream>
-#include "../include/steam.hpp"
-#include "smallet.cpp"
+//#include <iostream>
+//#include "../include/steam.hpp"
+//#include "smallet.cpp"
+#include "include.hpp"
 
 STeam::STeam()
 {

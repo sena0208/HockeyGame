@@ -2,8 +2,8 @@
 #define __HOCKEYSERVER_H__
 
 #include <iostream>
-#include "../..//common_include/vector_2d.hpp"
-#include "../../common_include/param.hpp"
+#include "vector_2d.hpp"
+#include "param.hpp"
 #include "steam.hpp"
 #include "spuck.hpp"
 
@@ -36,7 +36,7 @@ class HockeyServer
     //void setMalletVelWall(Vector2D const cm_vel);
     bool isValidVelocity(Vector2D const m_vel);
     bool isValidPosition(int id, Vector2D const cm_vel);
-    void checkPuckVelWall();
+    void checkPuckVel();
 
   public:
     CommandResult sendMalletVel(int id, Vector2D const cm_vel);

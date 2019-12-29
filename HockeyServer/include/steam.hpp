@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "smallet.hpp"
-#include "../../common_include/param.hpp"
+#include "param.hpp"
 
 class STeam
 {

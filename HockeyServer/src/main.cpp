@@ -1,9 +1,12 @@
 #include <iostream>
-#include "hockey_server.cpp"
-#include "steam.cpp"
-#include "spuck.cpp"
-#include "smallet.cpp"
-#include "../../HockeyPlayer/src/team1_main.cpp"
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
+#include "include.hpp"
 
 int main(void){
 
@@ -31,8 +34,6 @@ int main(void){
     //ここでサーバーから取り出したデータはすべて外部ファイルに保存していき、それを後々参照してもいいかもしれない
 
     //2. calculate velocity
-    team1Main(mallet_pos, mallet_vel, puck_pos, puck_vel);   
-    //team2Main();   
     //mallet_vel.x = 0.5;
     //mallet_vel.y = 0.5;
 

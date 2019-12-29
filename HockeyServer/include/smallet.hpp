@@ -1,8 +1,8 @@
 #ifndef __SMALLET_H__
 #define __SMALLET_H__
 #include <iostream>
-#include "../../common_include/vector_2d.hpp"
-#include "../../common_include/param.hpp"
+#include "vector_2d.hpp"
+#include "param.hpp"
 
 class SMallet
 {

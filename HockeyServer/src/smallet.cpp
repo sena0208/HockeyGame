@@ -2,7 +2,7 @@
 #define __SMALLET__
 
 #include <iostream>
-#include "../include/smallet.hpp"
+#include "include.hpp"
 
 SMallet::SMallet()
 {

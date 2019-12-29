@@ -6,7 +6,7 @@ if(exist("n") == 0 || n < 0) n = n0
 #---------------
 #plot
 #---------------
-plot "result/out.dat" index n using 1:2 ps 4 pt 2
+plot "result/out.dat" index n using 1:2 ps 3 pt 7
 
 #---------------
 #update

@@ -1,23 +1,28 @@
-run: obj/main.o obj/hockey_server.o obj/steam.o obj/smallet.o obj/spuck.o
-	g++ -Wall obj/main.o -o run
+#macro
+MAKEFILE_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+PROGRAM      := run
+INCDIR       := include
+SRCDIR       := src
+OBJDIR       := obj
+SRCS         := $(wildcard $(SRCDIR)/*.cpp)
+OBJS         := $(OBJDIR)/main.o \
+                $(OBJDIR)/hockey_server.o \
+								$(OBJDIR)/spuck.o \
+								$(OBJDIR)/steam.o \
+								$(OBJDIR)/smallet.o
 
-obj/main.o: src/main.cpp
-	g++ -Wall -c src/main.cpp -o obj/main.o
-
-obj/hockey_server.o: src/hockey_server.cpp
-	g++ -Wall -c src/hockey_server.cpp -o obj/hockey_server.o
-
-obj/steam.o: src/steam.cpp
-	g++ -Wall -c src/steam.cpp -o obj/steam.o
-
-obj/smallet.o: src/smallet.cpp
-	g++ -Wall -c src/smallet.cpp -o obj/smallet.o
-
-obj/spuck.o: src/spuck.cpp
-	g++ -Wall -c src/spuck.cpp -o obj/spuck.o
-
+CXX          := g++
+INCLUDE      := -I$(MAKEFILE_DIR)$(INCDIR)/
+CFLAGS       := -Wall -c -O2
 
 
+$(PROGRAM): $(OBJS)
+	@$(CXX) $^ -o $@
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	@$(CXX) $(CFLAGS) $(INCLUDE) $< -o $@
+
+.PHONY: clean
 clean:
-	rm run obj/main.o obj/hockey_server.o obj/steam.o obj/smallet.o obj/spuck.o
-
+	@$(RM) $(OBJS) $(PROGRAM)
+								

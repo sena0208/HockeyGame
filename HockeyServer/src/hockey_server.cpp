@@ -1,10 +1,11 @@
 #ifndef __HOCKEYSERVER__
 #define __HOCKEYSERVER_
 
-#include <iostream>
-#include "../include/hockey_server.hpp"
-#include "steam.cpp"
-#include "spuck.cpp"
+//#include <iostream>
+//#include "../include/hockey_server.hpp"
+//#include "steam.cpp"
+//#include "spuck.cpp"
+#include "include.hpp"
 
 
 HockeyServer::HockeyServer()
@@ -29,17 +30,18 @@ HockeyServer::~HockeyServer()
 void HockeyServer::initialMalletSet()
 {
   //FILE READ
-  s_team_1->s_mallet[0].m_pos.x = -1.0;
-  s_team_1->s_mallet[0].m_pos.y =  0.0;
+  s_team_1->s_mallet[0].m_pos.x =  0.0;
+  s_team_1->s_mallet[0].m_pos.y = -4.0;
   s_team_1->s_mallet[0].m_vel.x =  0.0;
-  s_team_1->s_mallet[0].m_vel.y =  1.0;
+  s_team_1->s_mallet[0].m_vel.y =  0.0;
 
-  s_team_1->s_mallet[1].m_pos.x =  1.0;
-  s_team_1->s_mallet[1].m_pos.y =  0.0;
+  s_team_1->s_mallet[1].m_pos.x =  0.0;
+  s_team_1->s_mallet[1].m_pos.y =  4.0;
   s_team_1->s_mallet[1].m_vel.x =  0.0;
-  s_team_1->s_mallet[1].m_vel.y = -1.0;
+  s_team_1->s_mallet[1].m_vel.y =  0.0;
 }
 
+//getter
 Vector2D & HockeyServer::getPuckPos() const
 {
   return s_puck->m_pos;
@@ -60,6 +62,7 @@ Vector2D & HockeyServer::getTeamVel(int id) const
   return s_team_1->getMalletVel(id);
 }
 
+//setter
 void HockeyServer::setMalletVel(int id, Vector2D cm_vel)
 {
   s_team_1->s_mallet[id].m_vel.x = cm_vel.x;
@@ -72,12 +75,14 @@ void HockeyServer::setMalletVelZero(int id)
   s_team_1->s_mallet[id].m_vel.y = 0.0;
 }
 
+//check mallet velocity
 bool HockeyServer::isValidVelocity(Vector2D const cm_vel)
 {
   if(cm_vel.r() <= MAX_VEL) return true; 
   else                      return false; 
 }
 
+//check mallet position
 bool HockeyServer::isValidPosition(int id, Vector2D const cm_vel)
 {
   Vector2D tmp_pos;
@@ -87,6 +92,7 @@ bool HockeyServer::isValidPosition(int id, Vector2D const cm_vel)
   else    return false; 
 }
 
+//update mallet velocity
 CommandResult HockeyServer::sendMalletVel(int id, Vector2D const cm_vel)
 {
   if(isValidVelocity(cm_vel) == true){
@@ -105,19 +111,24 @@ CommandResult HockeyServer::sendMalletVel(int id, Vector2D const cm_vel)
   }
 }
 
-void HockeyServer::checkPuckVelWall()
+void HockeyServer::checkPuckVel()
 {
   Vector2D tmp_pos;
   tmp_pos.x = s_puck->m_pos.x + s_puck->m_vel.x * DT;
   tmp_pos.y = s_puck->m_pos.y + s_puck->m_vel.y * DT;
 
+  //CHECK WALL
   if(tmp_pos.abs_x() > FIELD_WIDTH) s_puck->m_vel.x *= (-1.0);
   if(tmp_pos.abs_y() > FIELD_HEIGHT) s_puck->m_vel.y *= (-1.0);
+
+  //CHECK MALLET
+ 
+
 }
 
 void HockeyServer::updateAll()
 {
-  checkPuckVelWall();
+  checkPuckVel();
   s_puck->m_pos.x += s_puck->m_vel.x * DT;
   s_puck->m_pos.y += s_puck->m_vel.y * DT;
 

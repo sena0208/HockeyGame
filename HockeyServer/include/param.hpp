@@ -12,11 +12,11 @@
 
 //FIELD
 #define FIELD_WIDTH  4.0
-#define FIELD_HEIGHT 3.0
+#define FIELD_HEIGHT 6.0
 
 #define GOAL_WIDTH   4.0
 
-#define MAX_VEL      10
+#define MAX_VEL      20
 
 //MALLET
 #define NUM_MALLET   2
