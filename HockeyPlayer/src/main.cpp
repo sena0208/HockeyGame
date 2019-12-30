@@ -14,7 +14,23 @@ int main(){
   int result;
 
   double data[4 + (NUM_TEAM * NUM_MALLET * 4)];
-  double new_data[NUM_MALLET * 4];
+  
+  //data[0] puck pos x
+  //data[1] puck pos y
+  //data[2] puck vel x
+  //data[3] puck vel y
+
+  //data[4] mallet 1 pos x
+  //data[5] mallet 1 pos y
+  //data[6] mallet 1 vel x
+  //data[7] mallet 1 vel y
+
+  //data[8] mallet 2 pos x
+  //data[9] mallet 2 pos y
+  //data[10] mallet 2 vel x
+  //data[11] mallet 2 vel y
+
+  double new_data[NUM_MALLET * 2];
 
   if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
     perror("socket");
@@ -33,27 +49,18 @@ int main(){
     return -1;
   }
 
-  for(int i = 0; i < 5; i++){
+  for(int i = 0; i < 1000; i++){
     read(sockfd, data, sizeof(data));   //GETTER
 
-    /* procedure */
-    //printf("receive:\n");
-    //printf("(%d)  %f\n", i, data[0]);
-    //printf("send:\n");
-    //printf("(%d)  %f\n", i, data[0]);
 
     //mallet 1
-    new_data[0] = data[4];   //pos x
-    new_data[1] = data[5];   //pos y
-    new_data[2] = data[6];   //vel x
-    new_data[3] = data[7];   //vel y
+    new_data[0] = data[6];   //vel x
+    new_data[1] = data[7];   //vel y
     //mallet 2
-    new_data[4] = data[8];
-    new_data[5] = data[9];
-    new_data[6] = data[10];
-    new_data[7] = data[11];
+    new_data[2] = data[10];
+    new_data[3] = data[11];
 
-    sleep(1);
+    //sleep(1);
     write(sockfd, new_data, sizeof(new_data));  //SETTER
 
   }

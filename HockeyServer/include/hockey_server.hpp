@@ -27,14 +27,17 @@ class HockeyServer
     socklen_t client_len;
 
     double send[4 + (NUM_TEAM * NUM_MALLET * 4)];
-    double recv[NUM_MALLET * 4];
+    double recv[NUM_MALLET * 2];
 
   public:
     HockeyServer();
     ~HockeyServer();
 
   public:
-    void SendToPlayer(int iter);
+    void connectPlayer(int iter);
+    void updateAll();
+    void outputTimeLog(int const iter) const;
+
     //puck getter
     Vector2D & getPuckPos() const;
     Vector2D & getPuckVel() const;
@@ -45,22 +48,11 @@ class HockeyServer
 
   private:
     void TcpSocketSetting();
-    void zipData();
-    void unzipData();
     void initialMalletSet();
-    //assign command velocity
-    void setMalletVel(int id, Vector2D const cm_vel);
-    void setMalletVelZero(int id);
-    //void setMalletVelWall(Vector2D const cm_vel);
-    bool isValidVelocity(Vector2D const m_vel);
-    bool isValidPosition(int id, Vector2D const cm_vel);
-    void checkPuckVel();
-
-  public:
-    CommandResult sendMalletVel(int id, Vector2D const cm_vel);
-    void updateAll();
-    void outputTimeLog(int const iter) const;
-
+    void zipData();
+    void checkPuckPos();
+    void updateMallet();
+    void updatePuck();
 };
 
 #endif //__HOCKEYSERVER_H__

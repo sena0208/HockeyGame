@@ -11,8 +11,8 @@
 #define OUTITER      (int)(OUTTIME / DT)
 
 //FIELD
-#define FIELD_WIDTH  4.0
-#define FIELD_HEIGHT 6.0
+#define X_MAX        4.0
+#define Y_MAX        6.0
 
 #define GOAL_WIDTH   4.0
 

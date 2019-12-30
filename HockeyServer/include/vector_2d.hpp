@@ -56,6 +56,12 @@ class Vector2D {
       return ( r() * r() * r() );
     }
 
+    bool isSmallerthan(double r_max)
+    {
+      if(r() > r_max) return false;
+      else            return true;
+    }
+
     Vector2D setPolar(const double radius, const double angle)
     {
       x = radius * std::cos(angle);
@@ -85,6 +91,16 @@ class Vector2D {
       vec /= r();
       return vec;
     }
+
+    Vector2D extend(double length)
+    {
+      Vector2D vec;
+      vec = *this;
+      vec /= r();
+      vec *= length;
+      return vec;
+    }
+
 
     double innerProduct(Vector2D v) const
     {
