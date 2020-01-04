@@ -36,4 +36,11 @@ Vector2D & STeam::getMalletVel(int id)
   return s_mallet[id].m_vel;
 }
 
+void STeam::reflectTmpPos()
+{
+  for(int j = 0; j < NUM_MALLET; j++){
+    s_mallet[j].m_pos = s_mallet[j].tmp_pos;
+  }
+}
+
 #endif //__STEAM__

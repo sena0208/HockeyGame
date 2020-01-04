@@ -91,6 +91,19 @@ Vector2D & HockeyServer::getTeamVel(int id) const
   return s_team_1->getMalletVel(id);
 }
 
+
+
+
+
+
+//FUNCTIONS
+void HockeyServer::connectPlayer(int iter)
+{
+  zipData();
+  write(client_sockfd, send, sizeof(send));
+  read(client_sockfd, recv, sizeof(recv));
+}
+
 void HockeyServer::zipData()
 {
   send[0]  = s_puck->m_pos.x;
@@ -106,11 +119,73 @@ void HockeyServer::zipData()
   }
 }
 
-void HockeyServer::connectPlayer(int iter)
+
+
+
+
+void HockeyServer::updateAll()
 {
-  zipData();
-  write(client_sockfd, send, sizeof(send));
-  read(client_sockfd, recv, sizeof(recv));
+  updateMallet();
+  updatePuck();
+  reflectMalletTmp();
+
+  //tmpMalletPos();
+  //updatePuck();
+  //updateMallet();
+}
+
+void HockeyServer::updateMallet()
+{
+  for(int i = 0; i < NUM_MALLET; i++){
+    Vector2D tmp_pos;
+    Vector2D tmp_vel;
+
+    //プレイヤーからの情報を一旦受け取る
+    tmp_vel.x = recv[(i * 2)];
+    tmp_vel.y = recv[(i * 2) + 1];
+
+    //制限速度以下ならばマレットに速度を反映させる
+    if( tmp_vel.isSmallerthan(MAX_VEL) ){
+        s_team_1->s_mallet[i].m_vel = tmp_vel;
+    }else{
+      //速度オーバーの場合、最大速度に速度ベクトルを圧縮して反映
+        s_team_1->s_mallet[i].m_vel = tmp_vel.extend(MAX_VEL);
+    }
+
+    //速度をそのまま反映させた仮の次のマレットの位置
+    tmp_pos.x = s_team_1->s_mallet[i].m_pos.x + (s_team_1->s_mallet[i].m_vel.x * DT);
+    tmp_pos.y = s_team_1->s_mallet[i].m_pos.y + (s_team_1->s_mallet[i].m_vel.y * DT);
+
+    //x方向のフィールド内にいるかチェック
+    if( tmp_pos.abs_x() < X_MAX ){
+      s_team_1->s_mallet[i].tmp_pos.x = tmp_pos.x;
+    }else if( tmp_pos.x >= 0 ){
+      s_team_1->s_mallet[i].tmp_pos.x = X_MAX;
+    }else if( tmp_pos.x < 0 ){
+      s_team_1->s_mallet[i].tmp_pos.x = -X_MAX;
+    }else{
+      std::cout << "bug" << std::endl;
+    }
+    //y方向のフィールド内にいるかをチェック
+    if( tmp_pos.abs_y() < Y_MAX ){
+      s_team_1->s_mallet[i].tmp_pos.y = tmp_pos.y;
+    }else if( tmp_pos.y >= 0 ){
+      s_team_1->s_mallet[i].tmp_pos.y = Y_MAX;
+    }else if( tmp_pos.y < 0 ){
+      s_team_1->s_mallet[i].tmp_pos.y = -Y_MAX;
+    }else{
+      std::cout << "bug" << std::endl;
+    }
+
+    s_team_1->s_mallet[i].setSegment();
+  }
+}
+
+void HockeyServer::updatePuck()
+{
+  checkPuckPos();
+  s_puck->m_pos.x += s_puck->m_vel.x * DT;
+  s_puck->m_pos.y += s_puck->m_vel.y * DT;
 }
 
 void HockeyServer::checkPuckPos()
@@ -124,75 +199,48 @@ void HockeyServer::checkPuckPos()
   if(tmp_pos.abs_y() > Y_MAX) s_puck->m_vel.y *= (-1.0);
 
   //CHECK MALLET
-
-}
-
-void HockeyServer::updatePuck()
-{
-  checkPuckPos();
-  s_puck->m_pos.x += s_puck->m_vel.x * DT;
-  s_puck->m_pos.y += s_puck->m_vel.y * DT;
-}
-
-void HockeyServer::updateMallet()
-{
+  s_puck->tmp.assign(s_puck->m_pos, tmp_pos);
   for(int i = 0; i < NUM_MALLET; i++){
-    Vector2D tmp_pos;
-    Vector2D tmp_vel;
-
-    tmp_vel.x = recv[(i * 2)];
-    tmp_vel.y = recv[(i * 2) + 1];
-
-    if( tmp_vel.isSmallerthan(MAX_VEL) ){
-        s_team_1->s_mallet[i].m_vel = tmp_vel;
-    }else{
-      //速度オーバーの場合、最大速度に速度ベクトルを圧縮
-        s_team_1->s_mallet[i].m_vel = tmp_vel.extend(MAX_VEL);
+    if( checkSegmentCross(s_puck->tmp, s_team_1->s_mallet[i].tmp) ){
+      /* パックの速度を交点で折り返す */
+      changePuckVelocity(s_puck->tmp, s_team_1->s_mallet[i].tmp);
     }
-
-    tmp_pos.x = s_team_1->s_mallet[i].m_pos.x + (s_team_1->s_mallet[i].m_vel.x * DT);
-    tmp_pos.y = s_team_1->s_mallet[i].m_pos.y + (s_team_1->s_mallet[i].m_vel.y * DT);
-
-    if( tmp_pos.abs_x() < X_MAX ){
-      s_team_1->s_mallet[i].m_pos.x = tmp_pos.x;
-    }else if( tmp_pos.x >= 0 ){
-      s_team_1->s_mallet[i].m_pos.x = X_MAX;
-    }else if( tmp_pos.x < 0 ){
-      s_team_1->s_mallet[i].m_pos.x = X_MAX;
-    }else{
-      std::cout << "bag" << std::endl;
-    }
-
-    if( tmp_pos.abs_y() < Y_MAX ){
-      s_team_1->s_mallet[i].m_pos.y = tmp_pos.y;
-    }else if( tmp_pos.y >= 0 ){
-      s_team_1->s_mallet[i].m_pos.y = Y_MAX;
-    }else if( tmp_pos.y < 0 ){
-      s_team_1->s_mallet[i].m_pos.y = Y_MAX;
-    }else{
-      std::cout << "bag" << std::endl;
-    }
-
   }
 }
 
-void HockeyServer::updateAll()
+void HockeyServer::reflectMalletTmp()
 {
-  updatePuck();
-  updateMallet();
+  s_team_1->reflectTmpPos();
 }
+
+bool HockeyServer::checkSegmentCross(Segment2D puck, Segment2D mallet)
+{
+  /* 線分同士が交わるか判定 */
+  return true;
+}
+
+void HockeyServer::changePuckVelocity(Segment2D puck, Segment2D mallet)
+{
+  /* 線分同士の交点を求め、パックの速度を変える */
+}
+
+
 
 void HockeyServer::outputTimeLog(int const iter) const
 {
   std::cout << "Iter = " << iter << std::endl;
   for(int id = 0; id < NUM_MALLET; id++){
-    std::cout << "Mallet[" << id << "] Position = (" << s_team_1->s_mallet[id].m_pos.x << ", " << s_team_1->s_mallet[id].m_pos.y << ")" <<std::endl;
+    std::cout << "Mallet[" << id << "] Position = (" 
+    << s_team_1->s_mallet[id].m_pos.x << ", " 
+    << s_team_1->s_mallet[id].m_pos.y << ")" <<std::endl;
+
     fprintf(fp, "%f %f\n", s_team_1->s_mallet[id].m_pos.x, s_team_1->s_mallet[id].m_pos.y);
   }
   fprintf(fp, "%f %f\n", s_puck->m_pos.x, s_puck->m_pos.y);
   fprintf(fp, "\n\n");
 
-  std::cout << "Puck Position      = (" << s_puck->m_pos.x << ", " << s_puck->m_pos.y << ")" <<std::endl;
+  std::cout << "Puck Position      = ("
+  << s_puck->m_pos.x << ", " << s_puck->m_pos.y << ")" <<std::endl;
   std::cout << "-------------------------------------" << std::endl;
 }
 

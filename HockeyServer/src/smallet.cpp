@@ -14,4 +14,14 @@ SMallet::~SMallet()
   std::cout << "SMallet destructed!" << std::endl;
 }
 
+void SMallet::reflectTmp()
+{
+  m_pos = tmp_pos;
+}
+
+void SMallet::setSegment()
+{
+  tmp.assign(m_pos, tmp_pos);
+}
+
 #endif //__SMALLET__

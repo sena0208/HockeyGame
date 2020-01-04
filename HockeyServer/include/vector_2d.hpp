@@ -1,12 +1,14 @@
 #ifndef _VECTOR2D_
 #define _VECTOR2D_
 
-#include <iostream>
-#include <cmath>
-#include "param.hpp"
+//#include "include.hpp"
+//#include "matrix_2d.hpp"
 
 #define DEG2RAD (M_PI / 180.0)
 #define RAD2DEG (180.0 / M_PI)
+
+//class Line2D;
+//class Matrix2D;
 
 class Vector2D {
   public:
@@ -54,6 +56,12 @@ class Vector2D {
     double r3() const
     {
       return ( r() * r() * r() );
+    }
+
+    double dist(Vector2D point)
+    {
+      Vector2D rel = point - *this;
+      return rel.r();
     }
 
     bool isSmallerthan(double r_max)

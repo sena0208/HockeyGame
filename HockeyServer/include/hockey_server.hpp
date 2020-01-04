@@ -1,11 +1,7 @@
 #ifndef __HOCKEYSERVER_H__
 #define __HOCKEYSERVER_H__
 
-#include <iostream>
-#include "vector_2d.hpp"
-#include "param.hpp"
-#include "steam.hpp"
-#include "spuck.hpp"
+#include "include.hpp"
 
 class HockeyServer
 {
@@ -38,6 +34,8 @@ class HockeyServer
     void updateAll();
     void outputTimeLog(int const iter) const;
 
+    void tmpMalletPos();
+
     //puck getter
     Vector2D & getPuckPos() const;
     Vector2D & getPuckVel() const;
@@ -53,6 +51,9 @@ class HockeyServer
     void checkPuckPos();
     void updateMallet();
     void updatePuck();
+    void reflectMalletTmp();
+    bool checkSegmentCross(Segment2D puck, Segment2D mallet);
+    void changePuckVelocity(Segment2D puck, Segment2D mallet);
 };
 
 #endif //__HOCKEYSERVER_H__

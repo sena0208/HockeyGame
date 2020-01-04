@@ -1,9 +1,7 @@
 #ifndef __STEAM_H__
 #define __STEAM_H__
 
-#include <iostream>
-#include "smallet.hpp"
-#include "param.hpp"
+#include "include.hpp"
 
 class STeam
 {
@@ -16,6 +14,8 @@ class STeam
     ~STeam();
     Vector2D & getMalletPos(int id);
     Vector2D & getMalletVel(int id);
+
+    void reflectTmpPos();
 };
 
 #endif //__STEAM_H__
