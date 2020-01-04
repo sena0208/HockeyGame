@@ -45,12 +45,12 @@ class Segment2D {
     {
       return m_terminal;
     }
-/*
-    Line2D line() const
+
+    Line2D line()
     {
-      return Line2D( origin(), terminal() );
+      return Line2D( m_origin, m_terminal );
     }
-*/
+
     double length() const
     {
       return origin().dist( terminal() );

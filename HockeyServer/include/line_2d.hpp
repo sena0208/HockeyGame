@@ -35,12 +35,12 @@ class Line2D
       m_b = bb;
       m_c = cc;
     }
-/*
+
     Line2D( const Vector2D p1, const Vector2D p2 )
     {
       assign(p1, p2);
     }
-*/
+
     Line2D assign(const Vector2D p1, const Vector2D p2)
     {
       m_a = -(p2.y - p1.y);
