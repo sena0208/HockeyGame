@@ -8,6 +8,7 @@ int main(){
 
   double data[4 + (NUM_TEAM * NUM_MALLET * 4)];
   
+  /* contents of recceive array */
   //data[0] puck pos x
   //data[1] puck pos y
   //data[2] puck vel x

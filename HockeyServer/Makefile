@@ -13,7 +13,7 @@ OBJS         := $(OBJDIR)/main.o \
 
 CXX          := g++
 INCLUDE      := -I$(MAKEFILE_DIR)$(INCDIR)/
-CFLAGS       := -Wall -c -O2
+CFLAGS       := -Wall -c -O3
 
 
 $(PROGRAM): $(OBJS)

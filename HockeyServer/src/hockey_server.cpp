@@ -12,7 +12,6 @@ HockeyServer::HockeyServer()
   s_team_1 = new STeam();
   //s_team_2 = new Team();
 
-
   initialMalletSet();
   fp = fopen("result/out.dat", "w");
 }
@@ -128,10 +127,6 @@ void HockeyServer::updateAll()
   updateMallet();
   updatePuck();
   reflectMalletTmp();
-
-  //tmpMalletPos();
-  //updatePuck();
-  //updateMallet();
 }
 
 void HockeyServer::updateMallet()
