@@ -14,7 +14,8 @@ HockeyServer::HockeyServer()
 
 
   initialMalletSet();
-  fp = fopen("result/out.dat", "w");
+  fp1 = fopen("result/mallet.dat", "w");
+  fp2 = fopen("result/puck.dat", "w");
 }
 
 HockeyServer::~HockeyServer()
@@ -24,7 +25,8 @@ HockeyServer::~HockeyServer()
   delete s_team_1;
   close(client_sockfd);
   close(server_sockfd);
-  fclose(fp);
+  fclose(fp1);
+  fclose(fp2);
   //delete s_team_2;
 }
 
@@ -61,13 +63,13 @@ void HockeyServer::initialMalletSet()
   //FILE READ
   s_team_1->s_mallet[0].m_pos.x =  0.0;
   s_team_1->s_mallet[0].m_pos.y = -4.0;
-  s_team_1->s_mallet[0].m_vel.x =  0.0;
-  s_team_1->s_mallet[0].m_vel.y =  0.0;
+  s_team_1->s_mallet[0].m_vel.x =  2.0;
+  s_team_1->s_mallet[0].m_vel.y =  2.0;
 
   s_team_1->s_mallet[1].m_pos.x =  0.0;
   s_team_1->s_mallet[1].m_pos.y =  4.0;
-  s_team_1->s_mallet[1].m_vel.x =  0.0;
-  s_team_1->s_mallet[1].m_vel.y =  0.0;
+  s_team_1->s_mallet[1].m_vel.x =  2.0;
+  s_team_1->s_mallet[1].m_vel.y =  2.0;
 }
 
 //getter
@@ -161,8 +163,11 @@ void HockeyServer::updateMallet()
       s_team_1->s_mallet[i].tmp_pos.x = tmp_pos.x;
     }else if( tmp_pos.x >= 0 ){
       s_team_1->s_mallet[i].tmp_pos.x = X_MAX;
+      s_team_1->s_mallet[i].m_vel.x *= (-1);
+
     }else if( tmp_pos.x < 0 ){
       s_team_1->s_mallet[i].tmp_pos.x = -X_MAX;
+      s_team_1->s_mallet[i].m_vel.x *= (-1);
     }else{
       std::cout << "bug" << std::endl;
     }
@@ -171,8 +176,10 @@ void HockeyServer::updateMallet()
       s_team_1->s_mallet[i].tmp_pos.y = tmp_pos.y;
     }else if( tmp_pos.y >= 0 ){
       s_team_1->s_mallet[i].tmp_pos.y = Y_MAX;
+      s_team_1->s_mallet[i].m_vel.y *= (-1);
     }else if( tmp_pos.y < 0 ){
       s_team_1->s_mallet[i].tmp_pos.y = -Y_MAX;
+      s_team_1->s_mallet[i].m_vel.y *= (-1);
     }else{
       std::cout << "bug" << std::endl;
     }
@@ -203,7 +210,9 @@ void HockeyServer::checkPuckPos()
   for(int i = 0; i < NUM_MALLET; i++){
     if( checkSegmentCross(s_puck->tmp, s_team_1->s_mallet[i].tmp) ){
       /* パックの速度を交点で折り返す */
-      changePuckVelocity(s_puck->tmp, s_team_1->s_mallet[i].tmp);
+      //changePuckVelocity(s_puck->tmp, s_team_1->s_mallet[i].tmp);
+      s_puck->m_vel.x *= (-1.0);
+      s_puck->m_vel.y *= (-1.0);
     }
   }
 }
@@ -216,12 +225,41 @@ void HockeyServer::reflectMalletTmp()
 bool HockeyServer::checkSegmentCross(Segment2D puck, Segment2D mallet)
 {
   /* 線分同士が交わるか判定 */
-  return true;
+  Vector2D puck_origin = puck.origin();
+  Vector2D puck_terminal = puck.terminal();
+
+  Vector2D mallet_origin = mallet.origin();
+  Vector2D mallet_terminal = mallet.terminal();
+
+  double r, s;
+  double bumbo;
+  double x_diff, y_diff;
+
+  bumbo = (puck_terminal.x - puck_origin.x) * (mallet_terminal.y - mallet_origin.y) - (puck_terminal.y - puck_origin.y) * (mallet_terminal.x - mallet_origin.x);
+
+  x_diff = mallet_origin.x - puck_origin.x;
+  y_diff = mallet_origin.y - puck_origin.y;
+
+  r = ((mallet_terminal.y - mallet_origin.y) * x_diff - (mallet_terminal.x - mallet_origin.x) * y_diff) / bumbo;
+
+  s = ((puck_terminal.y - puck_origin.y) * x_diff - (puck_terminal.x - puck_origin.x) * y_diff) / bumbo;
+
+  if(bumbo == 0.0){
+    //paralell
+    return false;
+  }else if((0.0 < r) && (r < 1.0) && (0.0 < s) && (s < 1.0)){
+    //conflict
+    return true;
+  }else{
+    //out of range
+    return false;
+  }
 }
 
 void HockeyServer::changePuckVelocity(Segment2D puck, Segment2D mallet)
 {
   /* 線分同士の交点を求め、パックの速度を変える */
+  
 }
 
 
@@ -234,10 +272,10 @@ void HockeyServer::outputTimeLog(int const iter) const
     << s_team_1->s_mallet[id].m_pos.x << ", " 
     << s_team_1->s_mallet[id].m_pos.y << ")" <<std::endl;
 
-    fprintf(fp, "%f %f\n", s_team_1->s_mallet[id].m_pos.x, s_team_1->s_mallet[id].m_pos.y);
+    fprintf(fp1, "%f %f\n", s_team_1->s_mallet[id].m_pos.x, s_team_1->s_mallet[id].m_pos.y);
   }
-  fprintf(fp, "%f %f\n", s_puck->m_pos.x, s_puck->m_pos.y);
-  fprintf(fp, "\n\n");
+  fprintf(fp2, "%f %f\n\n\n", s_puck->m_pos.x, s_puck->m_pos.y);
+  fprintf(fp1, "\n\n");
 
   std::cout << "Puck Position      = ("
   << s_puck->m_pos.x << ", " << s_puck->m_pos.y << ")" <<std::endl;

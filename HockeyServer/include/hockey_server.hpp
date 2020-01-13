@@ -9,7 +9,8 @@ class HockeyServer
     SPuck* s_puck;
     STeam*  s_team_1;
     //Team*  s_team_2;
-    FILE* fp;
+    FILE* fp1;
+    FILE* fp2;
 
     //TCP SOCKET
   private:

@@ -12,7 +12,7 @@ SPuck::SPuck()
   m_pos.x =  0.0;
   m_pos.y =  0.0;
 
-  m_vel.x = -2.0;
+  m_vel.x =  2.0;
   m_vel.y =  2.0;
 }
 
